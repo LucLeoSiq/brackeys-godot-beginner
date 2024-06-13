@@ -3,13 +3,15 @@ extends CharacterBody2D
 const SPEED = 130.0
 const JUMP_VELOCITY = -300.0
 const JUMP_BUFFER_TIME = 0.2 # Time in seconds to buffer jump input
+const COYOTE_TIME = 0.5 # Time in seconds to buffer jump input
 
 @onready var animated_sprite_2d = $AnimatedSprite2D
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
-@export var jump_buffer_timer = 0
+var jump_buffer_timer = 0
+var coyote_time_timer = 0
 
 func _physics_process(delta):
 	# Add the gravity.
@@ -29,6 +31,16 @@ func _physics_process(delta):
 		if is_on_floor():
 			velocity.y = JUMP_VELOCITY
 			jump_buffer_timer = 0
+	
+	# Coyote Timer
+	if is_on_floor():
+		coyote_time_timer = COYOTE_TIME
+	else:
+		coyote_time_timer -= delta
+	
+	if coyote_time_timer > 0 and Input.is_action_just_pressed("jump"):
+		velocity.y = JUMP_VELOCITY
+		coyote_time_timer = 0
 
 	# Get the input direction> -1, 0 , 1 
 	var direction = Input.get_axis("move_left", "move_right")
