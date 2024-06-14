@@ -311,3 +311,19 @@ autoplay = "idle"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 7)
 shape = SubResource("CircleShape2D_mtfwi")
+
+[node name="RightOuterRaycast" type="RayCast2D" parent="."]
+position = Vector2(7, -7)
+target_position = Vector2(0, -6)
+
+[node name="RightInnerRaycast" type="RayCast2D" parent="."]
+position = Vector2(2, -7)
+target_position = Vector2(0, -6)
+
+[node name="LeftInnerRaycast" type="RayCast2D" parent="."]
+position = Vector2(-2, -7)
+target_position = Vector2(0, -6)
+
+[node name="LeftOuterRaycast" type="RayCast2D" parent="."]
+position = Vector2(-7, -7)
+target_position = Vector2(0, -6)
