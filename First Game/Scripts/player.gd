@@ -55,23 +55,27 @@ func player_jump(delta):
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
-		
+
+	# Start player descent when jump button is released
+	if Input.is_action_just_released("jump") and !is_on_floor():
+		velocity.y *= 0.6
+
 	# Handle jump buffer timer
 	elif Input.is_action_just_pressed("jump") and !is_on_floor():
 		jump_buffer_timer = JUMP_BUFFER_TIME
-	
+
 	if jump_buffer_timer > 0:
 		jump_buffer_timer -= delta
 		if is_on_floor():
 			velocity.y = JUMP_VELOCITY
 			jump_buffer_timer = 0
-	
+
 	# Coyote Timer
 	if is_on_floor():
 		coyote_time_timer = COYOTE_TIME
 	else:
 		coyote_time_timer -= delta
-	
+
 	if coyote_time_timer > 0 and Input.is_action_just_pressed("jump"):
 		velocity.y = JUMP_VELOCITY
 		coyote_time_timer = 0
