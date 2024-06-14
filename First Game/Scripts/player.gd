@@ -22,11 +22,41 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
+	# Player jump
+	player_jump(delta) 
+
+	# Get the input direction> -1, 0 , 1 
+	var direction = Input.get_axis("move_left", "move_right")
+	
+	# Flip the sprite
+	if direction > 0: 
+		animated_sprite_2d.flip_h = false
+	if direction < 0: 
+		animated_sprite_2d.flip_h = true
+
+	# Play animations
+	if is_on_floor():
+		if direction == 0:
+			animated_sprite_2d.play("idle")
+		else:
+			animated_sprite_2d.play("run")
+	else:
+		animated_sprite_2d.play("jump")
+	
+	# Apply Movement 
+	if direction:
+		velocity.x = direction * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+
+	move_and_slide()
+	
+func player_jump(delta):
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 		
-	# Handle jump buffer timerS
+	# Handle jump buffer timer
 	elif Input.is_action_just_pressed("jump") and !is_on_floor():
 		jump_buffer_timer = JUMP_BUFFER_TIME
 	
@@ -55,29 +85,3 @@ func _physics_process(delta):
 		and !right_inner_raycast.is_colliding() and !right_outer_raycast.is_colliding():
 			print("Colliding, moving to the right")
 			global_position.x += 5
-
-	# Get the input direction> -1, 0 , 1 
-	var direction = Input.get_axis("move_left", "move_right")
-	
-	# Flip the sprite
-	if direction > 0: 
-		animated_sprite_2d.flip_h = false
-	if direction < 0: 
-		animated_sprite_2d.flip_h = true
-
-	# Play animations
-	if is_on_floor():
-		if direction == 0:
-			animated_sprite_2d.play("idle")
-		else:
-			animated_sprite_2d.play("run")
-	else:
-		animated_sprite_2d.play("jump")
-	
-	# Apply Movement 
-	if direction:
-		velocity.x = direction * SPEED
-	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-
-	move_and_slide()
