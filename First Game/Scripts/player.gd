@@ -6,6 +6,10 @@ const JUMP_BUFFER_TIME = 0.2 # Time in seconds to buffer jump input
 const COYOTE_TIME = 0.5 # Time in seconds to buffer jump input
 
 @onready var animated_sprite_2d = $AnimatedSprite2D
+@onready var right_outer_raycast = $RightOuterRaycast
+@onready var right_inner_raycast = $RightInnerRaycast
+@onready var left_inner_raycast = $LeftInnerRaycast
+@onready var left_outer_raycast = $LeftOuterRaycast
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -41,6 +45,16 @@ func _physics_process(delta):
 	if coyote_time_timer > 0 and Input.is_action_just_pressed("jump"):
 		velocity.y = JUMP_VELOCITY
 		coyote_time_timer = 0
+
+	# Push player off upper ledges
+	if right_outer_raycast.is_colliding() and !right_inner_raycast.is_colliding() \
+		and !left_inner_raycast.is_colliding() and !left_outer_raycast.is_colliding():
+			print("Colliding, moving to the left")
+			global_position.x -= 5
+	if left_outer_raycast.is_colliding() and !left_inner_raycast.is_colliding() \
+		and !right_inner_raycast.is_colliding() and !right_outer_raycast.is_colliding():
+			print("Colliding, moving to the right")
+			global_position.x += 5
 
 	# Get the input direction> -1, 0 , 1 
 	var direction = Input.get_axis("move_left", "move_right")
