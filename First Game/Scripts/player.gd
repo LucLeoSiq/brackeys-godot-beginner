@@ -22,8 +22,8 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
-	# Player jump
-	player_jump(delta) 
+	# Apply Jump
+	do_jump(delta)
 
 	# Get the input direction> -1, 0 , 1 
 	var direction = Input.get_axis("move_left", "move_right")
@@ -40,7 +40,8 @@ func _physics_process(delta):
 			animated_sprite_2d.play("idle")
 		else:
 			animated_sprite_2d.play("run")
-	else:
+	
+	if !is_on_floor():
 		animated_sprite_2d.play("jump")
 	
 	# Apply Movement 
@@ -51,7 +52,7 @@ func _physics_process(delta):
 
 	move_and_slide()
 	
-func player_jump(delta):
+func do_jump(delta):
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
@@ -60,7 +61,7 @@ func player_jump(delta):
 	if Input.is_action_just_released("jump") and !is_on_floor():
 		velocity.y *= 0.6
 
-	# Handle jump buffer timer
+	# Handle jump input buffer timer
 	elif Input.is_action_just_pressed("jump") and !is_on_floor():
 		jump_buffer_timer = JUMP_BUFFER_TIME
 
@@ -81,11 +82,12 @@ func player_jump(delta):
 		coyote_time_timer = 0
 
 	# Push player off upper ledges
-	if right_outer_raycast.is_colliding() and !right_inner_raycast.is_colliding() \
-		and !left_inner_raycast.is_colliding() and !left_outer_raycast.is_colliding():
-			print("Colliding, moving to the left")
-			global_position.x -= 5
-	if left_outer_raycast.is_colliding() and !left_inner_raycast.is_colliding() \
-		and !right_inner_raycast.is_colliding() and !right_outer_raycast.is_colliding():
-			print("Colliding, moving to the right")
-			global_position.x += 5
+	#if !is_on_floor():
+		#if right_outer_raycast.is_colliding() and !right_inner_raycast.is_colliding() \
+			#and !left_inner_raycast.is_colliding() and !left_outer_raycast.is_colliding():
+				#print("Colliding, moving to the left")
+				#global_position.x -= 5
+		#if left_outer_raycast.is_colliding() and !left_inner_raycast.is_colliding() \
+			#and !right_inner_raycast.is_colliding() and !right_outer_raycast.is_colliding():
+				#print("Colliding, moving to the right")
+				#global_position.x += 5
